@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package worker;
+
+option go_package = "worker";
+
+import "common/expire.proto";
+import "scheduler/scheduler.proto";
+
+// Worker 执行者协议
+service Worker {
+  // Schedule 调度任务，该请求由调度器发往worker
+  rpc Schedule(scheduler.ScheduleRequest) returns(scheduler.ScheduleResponse) {
+
+  }
+}
+

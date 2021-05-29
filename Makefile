@@ -3,7 +3,7 @@
 protos: generate_proto
 
 generate_proto:
-	sh scripts/generate_proto.sh  "go" "proto" "./go"
+	sh scripts/generate_proto.sh  "go" "./" "./go"
 
 deps:
 	sh scripts/download_dependencies.sh

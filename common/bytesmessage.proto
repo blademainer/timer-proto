@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "common";
+
+// BytesMessage 字节数组类型message，方便使用非pb进行数据传递
+message BytesMessage {
+  // content 内容
+  bytes content = 1;
+}

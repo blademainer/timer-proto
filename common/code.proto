@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "common";
+
+
+enum Code{
+  // 未知状态
+  UNKNOWN = 0;
+
+  // 成功
+  SUCCESS = 1;
+
+  // 错误的过期时间
+  ILLEGAL_EXPIRE_TIME = 2;
+
+  // 过期时间早于当前时间
+  EXPIRE_TIME_EARLIER_THAN_NOW = 3;
+
+  // 已重试次数超过最大
+  RETRY_MAX_TIMES = 4;
+}

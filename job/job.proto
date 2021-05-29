@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+package job;
+
+option go_package = "job";
+
+import "common/expire.proto";
+import "common/target.proto";
+import "validate/validate.proto"; // github.com/envoyproxy/protoc-gen-validate/validate/validate.proto
+import "google/protobuf/any.proto";
+
+// Timer 计时任务
+service Timer {
+  // PutTimerJob 设置计时任务
+  rpc PutTimerJob(PutTimerJobRequest) returns(PutTimerJobResponse);
+
+  // InquireJob 检查job状态
+  rpc InquireJob(InquireJobRequest) returns(InquireJobResponse);
+
+  // InquireTask 检查task状态
+  rpc InquireTask(InquireJobRequest) returns(InquireJobResponse);
+}
+
+// PutTimerJobRequest 设置计时任务请求
+message PutTimerJobRequest {
+  // app_id 应用id
+  string app_id = 1 [(validate.rules).string = {min_len: 1}];
+
+  // job 任务内容
+  Job job = 2 [(validate.rules).message = {required: true}];
+
+  // callback 回调
+  common.Target callback = 3;
+}
+
+message Job {
+  // job_id 任务id，在同个app_id下需要保证任务id的唯一性
+  string job_id = 2 [(validate.rules).string = {min_len: 1}];
+
+  // expire 执行时间
+  common.Expire expire = 3;
+
+  // tasks 需要执行的任务
+  repeated Task tasks = 4 [(validate.rules).repeated = {min_items: 1}];
+
+  // task_strategy 当tasks超过1个时，指定执行策略
+  TaskStrategy task_strategy = 5 [(validate.rules).enum = {defined_only: true}];
+
+  // TaskStrategy 任务执行策略
+  enum TaskStrategy {
+    // SERIAL 串行执行
+    SERIAL = 0;
+
+    // PARALLEL 并行执行
+    PARALLEL = 1;
+  }
+}
+
+
+// PutTimerJobResponse 设置计时任务响应
+message PutTimerJobResponse {
+  // id 计时器内部唯一id
+  string id = 1;
+
+  // status 任务状态
+  Status status = 2;
+}
+
+// Task 任务
+message Task {
+  // task_id
+  string task_id = 1 [(validate.rules).string = {min_len: 1}];
+
+  // target 任务触发时的worker地址
+  common.Target target = 11;
+
+  // task_content 任务内容
+  google.protobuf.Any task_content = 2;
+
+  // result 执行结果
+  google.protobuf.Any result = 3;
+
+  // reason 错误详情。如果status=FAILED，则需要回传错误信息
+  string reason = 4;
+
+  // job_id 任务id，在同个app_id下需要保证任务id的唯一性
+  string job_id = 5;
+
+  // id 内部调度需要使用这个id，在PutJob的时候不要带该ID，因为job_server在接收到请求时会生成一个ID
+  string id = 6;
+
+  // task_name 任务name
+  string task_name = 7;
+}
+
+
+
+
+// InquireJobRequest 检查job状态请求
+message InquireJobRequest{
+  // app_id 应用id
+  string app_id = 1 [(validate.rules).string = {min_len: 1}];
+
+  // job_id job id
+  string job_id = 2 [(validate.rules).string = {min_len: 1}];
+}
+
+// InquireJobResponse 检查job状态响应
+message InquireJobResponse{
+  // id 定时器内部id
+  string id = 1;
+
+  // job 工作内容
+  Job job = 2;
+
+  // status job状态
+  Status status = 3;
+}
+
+// InquireTaskRequest 查询task请求
+message InquireTaskRequest {
+  // app_id 应用id
+  string app_id = 1 [(validate.rules).string = {min_len: 1}];
+
+  // job_id job id
+  string task_id = 2 [(validate.rules).string = {min_len: 1}];
+}
+
+// InquireTaskResponse 查询task响应
+message InquireTaskResponse{
+  // id 定时器内部id
+  string id = 1;
+
+  // task 任务内容
+  Task task = 2;
+
+  // status task状态
+  Status status = 3;
+}
+
+
+// Status 运行状态
+enum Status {
+  // UNKNOWN 未知状态
+  UNKNOWN = 0;
+
+  // PENDING 等待中
+  PENDING = 1;
+
+  // RUNNING 运行中
+  RUNNING = 2;
+
+  // COMPLETE 完成
+  COMPLETE = 3;
+
+  // FAILED 失败
+  FAILED = 4;
+}

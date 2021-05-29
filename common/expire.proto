@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "common";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+// Expire 过期时间
+message Expire{
+  oneof expire {
+    // expire_at 绝对过期时间
+    google.protobuf.Timestamp expire_at = 1;
+
+    // expire_duration 在固定时间后过期
+    google.protobuf.Duration expire_duration = 2;
+  }
+}

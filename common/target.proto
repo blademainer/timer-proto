@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "common";
+
+message Target {
+  // target 目标
+  oneof target {
+    // grpc_target grpc远程目标
+    GrpcTarget grpc_target = 11;
+
+    // http_target http远程目标
+    HttpTarget http_target = 12;
+  }
+}
+
+message GrpcTarget {
+  // grpc_url 任务触发时调用的远程地址，必须是grpc格式
+  string grpc_url = 2;
+}
+
+message HttpTarget {
+  // http_url 任务触发时调用的远程地址，必须是http格式
+  string http_url = 2;
+}

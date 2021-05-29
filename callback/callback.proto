@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package callback;
+
+option go_package = "callback";
+
+import "job/job.proto";
+
+// Callback 回调协议
+service Callback{
+  // Callback 事件通知
+  rpc Callback(CallbackRequest) returns(CallbackResponse);
+}
+
+// CallbackRequest 回调请求
+message CallbackRequest {
+  // payload 回调内容
+  oneof payload {
+    // job job类型回调
+    job.Job job = 1;
+
+    // task task类型回调
+    job.Task task = 2;
+  }
+
+  // status 状态
+  job.Status status = 11;
+
+}
+
+// CallbackResponse 响应
+message CallbackResponse {
+
+}

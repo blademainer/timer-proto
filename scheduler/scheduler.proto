@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package scheduler;
+
+option go_package = "scheduler";
+
+import "common/expire.proto";
+import "common/target.proto";
+import "job/job.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+// Scheduler 调度到worker
+service Scheduler {
+  // Schedule 执行任务
+  rpc Schedule(ScheduleRequest) returns (ScheduleResponse){
+
+  };
+
+  // Heartbeat 心跳
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse){
+
+  };
+
+  // SetFailTask 任务失败
+  rpc SetFailTask(SetFailTaskRequest) returns (SetFailTaskResponse){
+
+  };
+
+  // CompleteTask 完成任务
+  rpc CompleteTask(CompleteTaskRequest) returns (CompleteTaskResponse){
+
+  };
+
+}
+
+// HeartbeatRequest 心跳请求
+message HeartbeatRequest {
+  // task_id 任务id
+  string task_id = 1;
+
+  // heartbeat_time 心跳时间
+  google.protobuf.Timestamp heartbeat_time = 2;
+}
+
+// HeartbeatResponse 心跳响应
+message HeartbeatResponse {
+
+}
+
+message ScheduleRequest {
+  // schedule_id 调度id，全局唯一。worker需要定时上报该id的状态
+  string schedule_id = 1;
+
+  // task 任务内容
+  job.Task task = 2;
+
+  // heartbeat_interval 心跳间隔
+  google.protobuf.Duration heartbeat_interval = 3;
+
+  // heartbeat_timeout 心跳超时时间
+  google.protobuf.Duration heartbeat_timeout = 4;
+
+  // report 心跳或者上报的目标地址
+  common.Target report = 5;
+
+  // last_task_result 上一个task的执行结果，如果是第一个task，则该值会为空
+  google.protobuf.Any last_task_result = 6;
+}
+
+message ScheduleResponse {
+
+}
+
+message CompleteTaskRequest{
+  // task_id 任务id
+  string task_id = 1;
+
+  // now 完成时间
+  google.protobuf.Timestamp now = 2;
+
+  // result 任务结果
+  google.protobuf.Any result = 3;
+
+  // task_name 任务name
+  string task_name = 4;
+}
+
+message CompleteTaskResponse{
+
+}
+
+message SetFailTaskRequest{
+  // task_id 任务id
+  string task_id = 1;
+
+  // now 完成时间
+  google.protobuf.Timestamp now = 2;
+
+  // reason 失败原因
+  string reason = 3;
+}
+
+message SetFailTaskResponse{
+}
