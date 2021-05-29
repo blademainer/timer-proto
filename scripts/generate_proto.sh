@@ -27,8 +27,9 @@ echo "language: ${language}"
 #go get -u github.com/elazarl/go-bindata-assetfs/...
 #mkdir -p swagger
 
-find $PROTO_HOME -name "*.proto" | while read proto; do
-  dir="$(dirname "$proto")"
+find ${dir} -name "*.proto" | while read proto; do
+#  dir="$(dirname "$proto")"
+  pb_dir="$(dirname "$proto")"
   dir_path="$(cd "$dir" && pwd)"
   if [ -z "${output_dir}" ]; then
     out_dir="$dir/$base_dir"
@@ -44,7 +45,7 @@ find $PROTO_HOME -name "*.proto" | while read proto; do
   echo "generating proto..."
   [ "$language" == "go" ] && addition=" --with-gateway --validate-out lang=go:/out "
 #  docker run --rm -v "$dir":/defs -v "${out_dir}":/out blademainer/protoc-all:latest -i /defs -i /go/src -d /defs/ -l $language -o /out --lint $addition
-  docker run --rm -v "${WORK_HOME_PATH}":/defs -v "${out_dir}":/out namely/protoc-all:1.33_1 -f $dir/$file_name -i /input -l $language -o /out --lint --with-validator $addition
+  docker run --rm -v "$(cd ${dir} && pwd)":/defs -v "${out_dir}":/out namely/protoc-all:1.33_1 -f $pb_dir/$file_name -l $language -o /out --lint --with-validator $addition
 #  docker run --rm -v $dir:/defs -v ${IMPORT_HOME}:/input blademainer/protoc-all:latest -i /defs -i /input -i /go/src/ -d /defs/ -l go -o /defs --validate-out "lang=go:/defs" --with-gateway --lint $addition
 #  docker run --rm -v "$dir":/defs -v "${out_dir}":/out namely/protoc-all:latest -f ${file_name} -i ${dir} -l $language -o /out --lint --with-validator --validate-out --with-gateway
   addition=""
