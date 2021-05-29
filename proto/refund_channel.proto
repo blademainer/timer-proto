@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package pay;
+
+option java_package = "pub.pjoc.pay.channel";
+option go_package = "pay";

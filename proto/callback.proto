@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package pay;
+
+option java_package = "pub.pjoc.pay.channel";
+option go_package = "pay";
+
+import "google/api/httpbody.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// ChannelCallback handle channel's callback callback
+service ChannelCallback {
+
+  // CallbackByGet http get
+  rpc CallbackByGet(HttpCallbackRequest) returns(stream google.api.HttpBody){
+    option(google.api.http) = {
+      additional_bindings {
+        get: "/v1/web/callback/channel/{channel}"
+      }
+      additional_bindings {
+        get: "/v1/web/callback/channel/{channel}/account/{account}"
+      }
+      additional_bindings {
+        get: "/v1/web/callback/order/{order_id}"
+      }
+      get: "/v1/web/callback/channel/{channel}/account/{account}/order/{order_id}"
+    };
+  }
+
+  // CallbackByPost http post
+  rpc CallbackByPost(HttpCallbackRequest) returns(stream google.api.HttpBody){
+    option (google.api.http) = {
+      additional_bindings {
+        post: "/v1/web/callback/channel/{channel}"
+        body: "body"
+      }
+      additional_bindings {
+        post: "/v1/web/callback/channel/{channel}/account/{account}"
+        body: "body"
+      }
+      additional_bindings {
+        post: "/v1/web/callback/order/{order_id}"
+        body: "body"
+      }
+      post: "/v1/web/callback/channel/{channel}/account/{account}/order/{order_id}" // support http raw body, see https://github.com/grpc-ecosystem/grpc-gateway/issues/652#issuecomment-428059210
+      body: "body"
+    };
+  }
+
+  // CallbackByPut http put
+  rpc CallbackByPut(HttpCallbackRequest) returns(stream google.api.HttpBody){
+    option (google.api.http) = {
+      additional_bindings {
+        put: "/v1/web/callback/channel/{channel}"
+        body: "body"
+      }
+      additional_bindings {
+        put: "/v1/web/callback/channel/{channel}/account/{account}"
+        body: "body"
+      }
+      additional_bindings {
+        put: "/v1/web/callback/order/{order_id}"
+        body: "body"
+      }
+      put: "/v1/web/callback/channel/{channel}/account/{account}/order/{order_id}" // support http raw body, see https://github.com/grpc-ecosystem/grpc-gateway/issues/652#issuecomment-428059210
+      body: "body"
+    };
+  }
+
+}
+
+message HttpCallbackRequest {
+  string channel = 1;
+  string account = 2;
+  string order_id = 3;
+  string http_method = 4;
+//  bytes body = 5;
+  google.api.HttpBody body = 5;
+}
+
+message HttpCallbackResponse {
+  bytes body = 1;
+  map<string, string> header = 2;
+}
