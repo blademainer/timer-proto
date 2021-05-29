@@ -1,4 +1,4 @@
-module github.com/pjoc-team/pay-proto
+module github.com/pjoc-team/timer-proto
 
 go 1.14
 
