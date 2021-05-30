@@ -4,6 +4,7 @@ package worker;
 
 option go_package = "github.com/pjoc-team/timer-proto/worker";
 
+import "google/api/annotations.proto";
 import "common/expire.proto";
 import "scheduler/scheduler.proto";
 
@@ -11,7 +12,10 @@ import "scheduler/scheduler.proto";
 service Worker {
   // Schedule 调度任务，该请求由调度器发往worker
   rpc Schedule(scheduler.ScheduleRequest) returns(scheduler.ScheduleResponse) {
-
-  }
+    option (google.api.http) = {
+      put: "/v1/timer/schedule"
+      body:"*"
+    };
+  };
 }
 

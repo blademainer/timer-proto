@@ -4,12 +4,18 @@ package callback;
 
 option go_package = "github.com/pjoc-team/timer-proto/callback";
 
+import "google/api/annotations.proto";
 import "job/job.proto";
 
 // Callback 回调协议
 service Callback{
   // Callback 事件通知
-  rpc Callback(CallbackRequest) returns(CallbackResponse);
+  rpc Callback(CallbackRequest) returns(CallbackResponse){
+    option (google.api.http) = {
+      put: "/v1/timer/callback"
+      body:"*"
+    };
+  };
 }
 
 // CallbackRequest 回调请求
