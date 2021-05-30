@@ -17,7 +17,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 
-	job "job"
+	job "github.com/pjoc-team/timer-proto/job"
 )
 
 // ensure the imports are used

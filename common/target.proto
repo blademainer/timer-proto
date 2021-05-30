@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package common;
 
-option go_package = "common";
+option go_package = "github.com/pjoc-team/timer-proto/common";
 
 message Target {
   // target 目标

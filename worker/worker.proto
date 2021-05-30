@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package worker;
 
-option go_package = "worker";
+option go_package = "github.com/pjoc-team/timer-proto/worker";
 
 import "common/expire.proto";
 import "scheduler/scheduler.proto";
