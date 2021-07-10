@@ -352,6 +352,16 @@ func (m *Task) Validate() error {
 		}
 	}
 
+	if v, ok := interface{}(m.GetLastTaskResult()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TaskValidationError{
+				field:  "LastTaskResult",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if v, ok := interface{}(m.GetResult()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return TaskValidationError{
